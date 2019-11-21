@@ -1,0 +1,19 @@
+#test 测试环境
+project:
+  name: dev
+
+server:
+  port: 9100
+
+spring:
+  application:
+    name: ez-user
+  datasource:
+     username: stock
+     password: Yedp_5022
+     driver-class-name: com.mysql.cj.jdbc.Driver
+     url: jdbc:mysql://cdb-7rcdu2mk.cd.tencentcdb.com:10040/user_center
+
+mybatis:
+  mapperLocations: classpath:/mapper/*.xml
+  type-aliases-package: com.ez.user.entity
