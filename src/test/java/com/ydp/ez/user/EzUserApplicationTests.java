@@ -1,6 +1,8 @@
 package com.ydp.ez.user;
 
+import com.ydp.ez.user.service.IEmailService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
@@ -14,6 +16,8 @@ import java.sql.SQLException;
 class EzUserApplicationTests {
     @Resource
     DataSource dataSource;
+
+
     @Test
     public void contextLoads() throws SQLException {
         Connection connection = dataSource.getConnection();
