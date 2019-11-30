@@ -49,3 +49,10 @@ spring:
 mybatis:
   mapperLocations: classpath:/mapper/*.xml
   type-aliases-package: com.ez.user.entity
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://yedp:5022ydp@localhost:9000/eureka/
+  instance:
+    prefer-ip-address: true

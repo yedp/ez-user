@@ -2,13 +2,13 @@ package com.ydp.ez.user.controller;
 
 
 import com.ydp.ez.user.common.exception.UserErrorCode;
-import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,7 +31,7 @@ public class UserController extends BaseController {
      * @param validCode 验证码
      * @return
      */
-    @RequestMapping("/user/login")
+    @RequestMapping("/user/loginx")
     @ResponseBody
     public Result login(@RequestParam String userName, @RequestParam String password, String validCode) {
         Result result = new Result();
