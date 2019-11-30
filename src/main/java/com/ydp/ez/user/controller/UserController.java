@@ -45,4 +45,24 @@ public class UserController extends BaseController {
         }
         return result;
     }
+
+    /**
+     * 通过用户名查询用户信息
+     * @param userName
+     * @return
+     */
+    @RequestMapping("/user/queryByUserName")
+    @ResponseBody
+    public Result queryByUserName(@RequestParam String userName) {
+        Result result = new Result();
+        try {
+            result = success(userService.queryByUserName(userName));
+        } catch (Exception e) {
+            log.error("/login system error {}-{}", e.getMessage(), e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        } finally {
+            log.info("/login userId:{} result:{}", userName, result);
+        }
+        return result;
+    }
 }

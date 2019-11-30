@@ -39,7 +39,7 @@ public class UserService implements IUserService {
     @Override
     public UserRespVo login(String userName, String password) {
 
-        User user = this.getByUserName(userName);
+        User user = this.queryByUserName(userName);
         if (user != null) {
             return new UserRespVo("test", user.getUserName(), user.getNickName());
         }
@@ -48,7 +48,7 @@ public class UserService implements IUserService {
 
 
     @Override
-    public User getByUserName(String userName) {
+    public User queryByUserName(String userName) {
         if (userName == null) {
             return null;
         }

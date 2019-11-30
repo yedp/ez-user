@@ -19,5 +19,5 @@ public interface IUserService {
      */
     UserRespVo login(String userName, String password);
 
-    User getByUserName(String userName);
+    User queryByUserName(String userName);
 }
