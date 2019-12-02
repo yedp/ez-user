@@ -33,7 +33,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/loginx")
     @ResponseBody
-    public Result login(@RequestParam String userName, @RequestParam String password, String validCode) {
+    public Result login(String userName, String password, String validCode) {
         Result result = new Result();
         try {
             result = success(userService.login(userName,password));
@@ -53,7 +53,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/queryByUserName")
     @ResponseBody
-    public Result queryByUserName(@RequestParam String userName) {
+    public Result queryByUserName(String userName) {
         Result result = new Result();
         try {
             result = success(userService.queryByUserName(userName));
