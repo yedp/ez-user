@@ -3,6 +3,17 @@ package com.ydp.ez.user.entity;
 import java.util.Date;
 
 public class User {
+    public User() {
+    }
+
+    public User(String username, String password, String salt, String email) {
+        this.setUserName(username);
+        this.setPassword(password);
+        this.setSalt(salt);
+        this.setEmail(email);
+    }
+
+
     private Long id;
 
     private String userName;

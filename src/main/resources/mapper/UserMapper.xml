@@ -28,7 +28,7 @@
   </select>
 
   <insert id="insertSelective" parameterType="com.ydp.ez.user.entity.User" >
-    insert into user
+    insert ignore into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
