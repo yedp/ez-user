@@ -3,10 +3,12 @@ package com.ydp.ez.user.common.Interceptor;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.ydp.ez.user.common.annotations.Login;
+import com.ydp.ez.user.common.annotations.Authentication;
+import com.ydp.ez.user.common.annotations.Authorization;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.util.RedisUtil;
 import com.ydp.ez.user.common.util.UserConstants;
+import com.ydp.ez.user.common.util.WebContext;
 import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.common.vo.SessionVO;
 import org.apache.commons.lang.StringUtils;
@@ -17,14 +19,11 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.ydp.ez.user.common.vo.SessionVO.*;
 
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter {
@@ -41,7 +40,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
         //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(Login.class)) {
+        if (method.isAnnotationPresent(Authentication.class) || method.isAnnotationPresent(Authorization.class)) {
             Map<String, String> paramMap = new HashMap<>();
             String token = httpServletRequest.getParameter(UserConstants.HTTP_PARAMETER_REQUEST_TOKEN_KEY);
             if (StringUtils.isEmpty(token)) {
@@ -54,6 +53,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             String key = String.format(UserConstants.SESSION_KEY, userName);
             SessionVO sessionVO = redisUtil.get(key, SessionVO.class);
             if (sessionVO != null && token.equals(sessionVO.getToken())) {
+                WebContext.registry(sessionVO);
                 return true;
             }
             error(httpServletResponse, UserErrorCode.AUTH_FAIL, "登录失效，请重新登录");

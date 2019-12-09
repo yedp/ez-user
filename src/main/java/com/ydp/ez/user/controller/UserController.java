@@ -1,10 +1,11 @@
 package com.ydp.ez.user.controller;
 
 
+import com.ydp.ez.user.common.annotations.Authentication;
 import com.ydp.ez.user.common.annotations.Log;
-import com.ydp.ez.user.common.annotations.Login;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
+import com.ydp.ez.user.common.util.WebContext;
 import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +86,27 @@ public class UserController extends BaseController {
         return result;
     }
 
+
+    /**
+     * 获取本人session
+     *
+     * @return
+     */
+    @RequestMapping("/user/get-session")
+    @ResponseBody
+    @Log(prefix = "用户获取session")
+    @Authentication
+    public Result getSession() {
+        Result result = new Result();
+        try {
+            result = success(WebContext.getContext());
+        } catch (Exception e) {
+            log.error("/login system error {}-{}", e.getMessage(), e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        }
+        return result;
+    }
+
     /**
      * 通过用户名查询用户信息
      *
@@ -93,7 +115,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/queryByUserName")
     @ResponseBody
-    @Login
+    @Authentication
     public Result queryByUserName(String userName) {
         Result result = new Result();
         try {
