@@ -1,6 +1,7 @@
 package com.ydp.ez.user.controller;
 
 
+import com.ydp.ez.user.common.annotations.Log;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.Result;
@@ -27,6 +28,7 @@ public class UserController extends BaseController {
 
     @RequestMapping("/user/send-valid-code")
     @ResponseBody
+    @Log(prefix = "发送验证码")
     public Result register(@RequestParam String email) {
         Result result = null;
         try {
@@ -38,8 +40,6 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             log.error("/user/send-valid-code error email:{},error {}",  email, e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
-        } finally {
-            log.info("email:{},result:{}", email, result);
         }
         return result;
     }
@@ -47,6 +47,7 @@ public class UserController extends BaseController {
 
     @RequestMapping("/user/register")
     @ResponseBody
+    @Log(prefix = "用户注册")
     public Result register(@RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam String validCode) {
         Result result = null;
         try {
@@ -57,8 +58,6 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             log.error("/register error user:{},password:{},email:{},error {}", userName, password, email, e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
-        } finally {
-            log.info("userName:{},result:{}", userName, result);
         }
         return result;
     }
@@ -73,6 +72,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/login")
     @ResponseBody
+    @Log(prefix = "用户登录")
     public Result login(String userName, String password, String validCode) {
         Result result = new Result();
         try {
@@ -80,8 +80,6 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             log.error("/login system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
-        } finally {
-            log.info("/login userId:{} password:{} result:{}", userName, password, result);
         }
         return result;
     }
@@ -101,8 +99,6 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             log.error("/login system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
-        } finally {
-            log.info("/login userId:{} result:{}", userName, result);
         }
         return result;
     }

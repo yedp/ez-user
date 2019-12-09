@@ -1,4 +1,4 @@
-package com.ydp.ez.user.common.filter;
+package com.ydp.ez.user.common.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.ydp.ez.user.common.annotations.RequestLoggerDefinition;
@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Aspect
 @Component
-public class RequestLogAOP {
+public class RequestLogAspect {
     /**
      * 日志对象.
      */
