@@ -3,6 +3,7 @@ package com.ydp.ez.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.google.common.util.concurrent.RateLimiter;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.util.CodecUtil;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: yedp
@@ -39,13 +40,17 @@ public class UserService implements IUserService {
     private static final String USER_INFO_KEY = "USER_INFO:%s";
     //验证码redis_key
     private static final String VALID_CODE = "VALID_CODE:%s";
-
     // token过期时间 31天
     private static final long TOKEN_EXPIRE_TIME = 31 * 24 * 60 * 60 * 1000;
+    //限流
+    private static final RateLimiter rateLimiter = RateLimiter.create(5,20, TimeUnit.SECONDS);
 
 
     @Override
     public UserRespVo register(String username, String password, String email, String validCode) throws UserException {
+        if(!rateLimiter.tryAcquire()){
+            throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
+        }
         if (!this.verifyValidCode(email, validCode)) {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "验证码不正确");
         }
@@ -68,6 +73,9 @@ public class UserService implements IUserService {
      */
     @Override
     public UserRespVo login(String userName, String password) throws UserException {
+        if(!rateLimiter.tryAcquire()){
+            throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
+        }
         User user = this.queryByUserName(userName);
         if (user != null && CodecUtil.verifySha256Hash(password, user.getSalt(), user.getPassword())) {
             Date expireTime = new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);

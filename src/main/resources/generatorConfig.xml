@@ -8,7 +8,7 @@
     <properties resource="application-dev.yml"/>
 
     <!--指定特定数据库的jdbc驱动jar包的位置-->
-    <classPathEntry location="C:\\software\\repository\\mysql\\mysql-connector-java\\5.1.38\\mysql-connector-java-5.1.38.jar"/>
+    <classPathEntry location="D:\\greenSoftWare\\repository\\mysql\\mysql-connector-java\\5.1.38\\mysql-connector-java-5.1.38.jar"/>
 
     <context id="default" targetRuntime="MyBatis3">
 
@@ -66,7 +66,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="user" domainObjectName="User"
+        <table tableName="request_log" domainObjectName="RequestLog"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

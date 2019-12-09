@@ -24,6 +24,7 @@ public class UserController extends BaseController {
     private IUserService userService;
 
 
+
     @RequestMapping("/user/send-valid-code")
     @ResponseBody
     public Result register(@RequestParam String email) {
