@@ -10,13 +10,14 @@
     <result column="real_name" property="realName" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="permit_client_num" property="permitClientNum" jdbcType="TINYINT" />
     <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
     <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="is_delete" property="isDelete" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_name, password, salt, nick_name, real_name, phone, email, add_time, last_login_time, 
+    id, user_name, password, salt, nick_name, real_name, phone, email, permit_client_num, add_time, last_login_time,
     modify_time, is_delete
   </sql>
   <select id="selectByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -54,6 +55,9 @@
       <if test="email != null" >
         email,
       </if>
+      <if test="permitClientNum != null and permitClientNum>0">
+        permit_client_num,
+      </if>
         add_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -80,6 +84,9 @@
       </if>
       <if test="email != null" >
         #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="permitClientNum != null and permitClientNum>0">
+        #{permitClientNum,jdbcType=TINYINT}
       </if>
       now()
     </trim>

@@ -3,6 +3,7 @@ package com.ydp.ez.user.common.vo;
 import com.alibaba.fastjson.JSON;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.ydp.ez.user.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,6 +11,18 @@ import java.io.Serializable;
 @Data
 public class SessionVO implements Serializable {
     private static final long serialVersionUID = 222159356576070759L;
+
+    public SessionVO(){}
+    public SessionVO(User user){
+        this.setUserId(user.getId());
+        this.setUserName(user.getUserName());
+        this.setEmail(user.getEmail());
+        this.setPhone(user.getPhone());
+        this.setPermitClientNum(user.getPermitClientNum());
+        this.setNickName(user.getNickName());
+        this.setRealName(user.getRealName());
+    }
+
     private long userId;
     /**
      * 用户名
@@ -38,34 +51,16 @@ public class SessionVO implements Serializable {
     private String email;
 
     /**
-     *允许客服端连接最大数量
+     * 允许客服端连接最大数量
      */
     private Integer permitClientNum;
 
     /**
      * token存储：token：ip
      */
-    private Cache<String,Token> tokenCache;
+    private String token;
 
-    public void setPermitClientNum(Integer permitClientNum){
-        if(permitClientNum == null){
-            permitClientNum = 1;
-        }
-        this.permitClientNum = permitClientNum;
-        tokenCache = CacheBuilder.newBuilder().maximumSize(permitClientNum).recordStats().build();
-    }
-
-    @Data
-    public static class Token{
-        String token;
-        String ip;
-
-        @Override
-        public String toString(){
-            return JSON.toJSONString(this);
-        }
-
-    }
+    private String ip;
 
 
 

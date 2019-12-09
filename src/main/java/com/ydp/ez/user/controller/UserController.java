@@ -2,6 +2,7 @@ package com.ydp.ez.user.controller;
 
 
 import com.ydp.ez.user.common.annotations.Log;
+import com.ydp.ez.user.common.annotations.Login;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.Result;
@@ -92,6 +93,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/queryByUserName")
     @ResponseBody
+    @Login
     public Result queryByUserName(String userName) {
         Result result = new Result();
         try {

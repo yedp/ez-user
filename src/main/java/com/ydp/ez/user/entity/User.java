@@ -1,7 +1,10 @@
 package com.ydp.ez.user.entity;
 
-import java.util.Date;
+import lombok.Data;
+import org.springframework.data.relational.core.sql.In;
 
+import java.util.Date;
+@Data
 public class User {
     public User() {
     }
@@ -35,102 +38,28 @@ public class User {
     private Date lastLoginTime;
 
     private Date modifyTime;
-
-    private Byte isDelete;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
+    private Integer permitClientNum;
+    private Integer isDelete;
 
     public void setUserName(String userName) {
         this.userName = userName == null ? null : userName.trim();
     }
-
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
-
-    public String getSalt() {
-        return salt;
-    }
-
     public void setSalt(String salt) {
         this.salt = salt == null ? null : salt.trim();
     }
-
-    public String getNickName() {
-        return nickName;
-    }
-
     public void setNickName(String nickName) {
         this.nickName = nickName == null ? null : nickName.trim();
     }
-
-    public String getRealName() {
-        return realName;
-    }
-
     public void setRealName(String realName) {
         this.realName = realName == null ? null : realName.trim();
     }
-
-    public String getPhone() {
-        return phone;
-    }
-
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
     }
-
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
-    }
-
-    public Date getAddTime() {
-        return addTime;
-    }
-
-    public void setAddTime(Date addTime) {
-        this.addTime = addTime;
-    }
-
-    public Date getLastLoginTime() {
-        return lastLoginTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public Byte getIsDelete() {
-        return isDelete;
-    }
-
-    public void setIsDelete(Byte isDelete) {
-        this.isDelete = isDelete;
     }
 }

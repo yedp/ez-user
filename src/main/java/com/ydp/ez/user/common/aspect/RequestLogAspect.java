@@ -96,7 +96,8 @@ public class RequestLogAspect {
         SessionVO sessionVO = WebContext.getContext();
         if (sessionVO != null) {
             requestLog.setRequestUser(sessionVO.getUserName());
-            requestLog.setRequestId(sessionVO.getTokenCache().asMap().values().iterator().next().toString());
+            requestLog.setRequestId(sessionVO.getToken());
+            requestLog.setTrackId(sessionVO.getIp());
         }
         return requestLog;
     }

@@ -1,12 +1,12 @@
-package com.ydp.ez.user.common.filter;
+package com.ydp.ez.user.common.Interceptor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-public class RequestInterceptor extends HandlerInterceptorAdapter {
+@Component
+public class CrossDomainInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");

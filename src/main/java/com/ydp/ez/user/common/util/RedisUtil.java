@@ -1,6 +1,7 @@
 package com.ydp.ez.user.common.util;
 
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author yedp
  */
 @Component
+@Slf4j
 public class RedisUtil {
 
     @Autowired
@@ -116,7 +118,12 @@ public class RedisUtil {
      */
     public <T> T get(String key, Class<T> clazz) {
         Object value = this.get(key);
-        return value == null ? null : JSON.parseObject(String.valueOf(value), clazz);
+        try {
+            return value == null ? null : JSON.parseObject(String.valueOf(value), clazz);
+        } catch (Exception e) {
+            log.error("get key:{}; value:{}; error:{}", key, value, e);
+            return null;
+        }
     }
 
     /**

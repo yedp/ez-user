@@ -8,6 +8,8 @@ import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.util.CodecUtil;
 import com.ydp.ez.user.common.util.RedisUtil;
+import com.ydp.ez.user.common.util.UserConstants;
+import com.ydp.ez.user.common.vo.SessionVO;
 import com.ydp.ez.user.common.vo.UserRespVo;
 import com.ydp.ez.user.entity.User;
 import com.ydp.ez.user.mapper.UserMapper;
@@ -43,17 +45,18 @@ public class UserService implements IUserService {
     // token过期时间 31天
     private static final long TOKEN_EXPIRE_TIME = 31 * 24 * 60 * 60 * 1000;
     //限流
-    private static final RateLimiter rateLimiter = RateLimiter.create(5,20, TimeUnit.SECONDS);
+    private static final RateLimiter rateLimiter = RateLimiter.create(5, 20, TimeUnit.SECONDS);
 
 
     @Override
     public UserRespVo register(String username, String password, String email, String validCode) throws UserException {
-        if(!rateLimiter.tryAcquire()){
+        if (!rateLimiter.tryAcquire()) {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
-        if (!this.verifyValidCode(email, validCode)) {
-            throw new UserException(UserErrorCode.SYSTEM_REMIND, "验证码不正确");
-        }
+
+//        if (!this.verifyValidCode(email, validCode)) {
+//            throw new UserException(UserErrorCode.SYSTEM_REMIND, "验证码不正确");
+//        }
         String salt = CodecUtil.generateRandomStr(6);
         String encodePassword = CodecUtil.encodeSha256Hash(password, salt);
         User user = new User(username, encodePassword, salt, email);
@@ -73,16 +76,28 @@ public class UserService implements IUserService {
      */
     @Override
     public UserRespVo login(String userName, String password) throws UserException {
-        if(!rateLimiter.tryAcquire()){
+        if (!rateLimiter.tryAcquire()) {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
+        UserRespVo userRespVo = null;
         User user = this.queryByUserName(userName);
         if (user != null && CodecUtil.verifySha256Hash(password, user.getSalt(), user.getPassword())) {
             Date expireTime = new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
             String token = JWT.create().withExpiresAt(expireTime).withAudience(user.getUserName()).sign(Algorithm.HMAC256(password));
-            return new UserRespVo(token, user.getUserName(), user.getNickName());
+            userRespVo = new UserRespVo(token, user.getUserName(), user.getNickName());
+            String sessionKey = String.format(UserConstants.SESSION_KEY, user.getUserName());
+            SessionVO sessionVO = redisUtil.get(sessionKey, SessionVO.class);
+            if (sessionVO == null) {
+                sessionVO = new SessionVO(user);
+            }
+            sessionVO.setToken(token);
+            redisUtil.set(sessionKey, JSON.toJSONString(sessionVO));
+        } else {
+            throw new UserException(UserErrorCode.SYSTEM_REMIND, "用户名或者密码错误");
         }
-        throw new UserException(UserErrorCode.SYSTEM_REMIND, "用户名或者密码错误");
+
+
+        return userRespVo;
     }
 
     @Override
@@ -103,16 +118,20 @@ public class UserService implements IUserService {
 
     private static final String EMAIL_SUBJECT = "ezmmm注册验证码";
     private static final String EMAIL_CONTENT = "ezmmm注册验证码:'%s'，5分钟内有效";
+
     @Override
     public void sendValidCode(String email) throws UserException {
-        if(StringUtils.isEmpty(email)) {
+        if (StringUtils.isEmpty(email)) {
             throw new UserException(UserErrorCode.PARAM_NULL, "邮箱");
+        }
+        if (!rateLimiter.tryAcquire()) {
+            throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
         String key = String.format(VALID_CODE, email);
         String validCode = redisUtil.getStr(key);
         if (validCode == null) {
             validCode = CodecUtil.generateRandomStr(6);
-            redisUtil.set(key, validCode,300);
+            redisUtil.set(key, validCode, 300);
         }
         emailService.sendEmail(email, EMAIL_SUBJECT, String.format(EMAIL_CONTENT, validCode));
     }
@@ -128,7 +147,7 @@ public class UserService implements IUserService {
             return false;
         }
         boolean result = validCode.equalsIgnoreCase(cacheValidCode);
-        if(result){
+        if (result) {
             redisUtil.del(key);
         }
         return result;
