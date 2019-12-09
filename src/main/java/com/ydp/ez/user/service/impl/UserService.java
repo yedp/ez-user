@@ -13,6 +13,7 @@ import com.ydp.ez.user.mapper.UserMapper;
 import com.ydp.ez.user.service.IEmailService;
 import com.ydp.ez.user.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class UserService implements IUserService {
         User user = new User(username, encodePassword, salt, email);
         boolean isAddSuccess = userMapper.insertSelective(user) > 0 ? true : false;
         if (isAddSuccess) {
-            return login(user.getUserName(), user.getPassword());
+            return login(user.getUserName(), password);
         }
         throw new UserException(UserErrorCode.SYSTEM_REMIND, "注册失败:用户名或者邮箱注册");
     }
@@ -68,7 +69,7 @@ public class UserService implements IUserService {
     @Override
     public UserRespVo login(String userName, String password) throws UserException {
         User user = this.queryByUserName(userName);
-        if (user != null && CodecUtil.verifySha256Hash(userName, user.getSalt(), password)) {
+        if (user != null && CodecUtil.verifySha256Hash(password, user.getSalt(), user.getPassword())) {
             Date expireTime = new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
             String token = JWT.create().withExpiresAt(expireTime).withAudience(user.getUserName()).sign(Algorithm.HMAC256(password));
             return new UserRespVo(token, user.getUserName(), user.getNickName());
@@ -95,12 +96,15 @@ public class UserService implements IUserService {
     private static final String EMAIL_SUBJECT = "ezmmm注册验证码";
     private static final String EMAIL_CONTENT = "ezmmm注册验证码:'%s'，5分钟内有效";
     @Override
-    public void sendValidCode(String email) {
+    public void sendValidCode(String email) throws UserException {
+        if(StringUtils.isEmpty(email)) {
+            throw new UserException(UserErrorCode.PARAM_NULL, "邮箱");
+        }
         String key = String.format(VALID_CODE, email);
-        String validCode = String.valueOf(redisUtil.get(key));
+        String validCode = redisUtil.getStr(key);
         if (validCode == null) {
             validCode = CodecUtil.generateRandomStr(6);
-            redisUtil.set(key, validCode);
+            redisUtil.set(key, validCode,300);
         }
         emailService.sendEmail(email, EMAIL_SUBJECT, String.format(EMAIL_CONTENT, validCode));
     }
@@ -115,6 +119,10 @@ public class UserService implements IUserService {
         if (cacheValidCode == null) {
             return false;
         }
-        return validCode.equals(cacheValidCode);
+        boolean result = validCode.equalsIgnoreCase(cacheValidCode);
+        if(result){
+            redisUtil.del(key);
+        }
+        return result;
     }
 }

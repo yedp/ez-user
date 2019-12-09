@@ -44,7 +44,7 @@ public interface IUserService {
     /**
      * 发送验证码
      */
-    void sendValidCode(String email);
+    void sendValidCode(String email) throws UserException;
 
     /**
      * 验证验证码

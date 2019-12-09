@@ -98,6 +98,17 @@ public class RedisUtil {
     }
 
     /**
+     * String缓存获取
+     *
+     * @param key 键
+     * @return 值
+     */
+    public String getStr(String key) {
+        Object object = key == null ? null : redisTemplate.opsForValue().get(key);
+        return object == null ? null : String.valueOf(object);
+    }
+
+    /**
      * 普通缓存获取
      *
      * @param key 键

@@ -24,6 +24,26 @@ public class UserController extends BaseController {
     private IUserService userService;
 
 
+    @RequestMapping("/user/send-valid-code")
+    @ResponseBody
+    public Result register(@RequestParam String email) {
+        Result result = null;
+        try {
+            userService.sendValidCode(email);
+            result = success();
+        } catch (UserException e) {
+            log.error("/user/send-valid-code error email:{},error {}",  email, e);
+            result = error(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            log.error("/user/send-valid-code error email:{},error {}",  email, e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        } finally {
+            log.info("email:{},result:{}", email, result);
+        }
+        return result;
+    }
+
+
     @RequestMapping("/user/register")
     @ResponseBody
     public Result register(@RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam String validCode) {
