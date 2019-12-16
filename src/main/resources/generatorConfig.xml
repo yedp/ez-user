@@ -66,7 +66,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="user_role_relation" domainObjectName="UseRoleRelation"
+        <table tableName="module" domainObjectName="module"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

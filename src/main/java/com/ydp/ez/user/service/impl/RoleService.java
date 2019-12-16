@@ -2,8 +2,10 @@ package com.ydp.ez.user.service.impl;
 
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
+import com.ydp.ez.user.entity.Module;
 import com.ydp.ez.user.entity.Role;
 import com.ydp.ez.user.entity.UserRoleRelation;
+import com.ydp.ez.user.mapper.ModuleMapper;
 import com.ydp.ez.user.mapper.RoleMapper;
 import com.ydp.ez.user.mapper.UserRoleRelationMapper;
 import com.ydp.ez.user.service.IRoleService;
@@ -20,7 +22,7 @@ public class RoleService implements IRoleService {
     @Resource
     RoleMapper roleMapper;
     @Resource
-    UserRoleRelationMapper userRroleRelationMapper;
+    ModuleMapper moduleMapper;
 
     @Override
     public Role addRole(String roleName, String roleDesc) throws UserException {
@@ -53,30 +55,6 @@ public class RoleService implements IRoleService {
     @Override
     public List<Role> queryRoleList(Integer id, String roleName) {
         return this.roleMapper.queryRoleList(id, roleName);
-    }
-
-    @Override
-    public boolean addUserRoleRelation(Long userId, Integer roleId) throws UserException {
-        if (userId == null) {
-            throw new UserException(UserErrorCode.PARAM_NULL, "用户编号");
-        }
-        if (userId == null) {
-            throw new UserException(UserErrorCode.PARAM_NULL, "角色编号");
-        }
-        return userRroleRelationMapper.insert(userId, roleId) > 0 ? true : false;
-    }
-
-    @Override
-    public boolean logicalDeleteUserRoleRelation(Long id) throws UserException {
-        if (id == null) {
-            throw new UserException(UserErrorCode.PARAM_NULL, "编号");
-        }
-        return userRroleRelationMapper.logicalDelete(id) > 0 ? true : false;
-    }
-
-    @Override
-    public List<UserRoleRelation> queryUserRoleRelationByUserId(Long userId) {
-        return userRroleRelationMapper.queryByUserId(userId);
     }
 
     @Override

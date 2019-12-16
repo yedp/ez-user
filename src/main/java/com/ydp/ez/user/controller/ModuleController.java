@@ -5,16 +5,14 @@ import com.ydp.ez.user.common.annotations.Authentication;
 import com.ydp.ez.user.common.annotations.Log;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
-import com.ydp.ez.user.common.util.WebContext;
 import com.ydp.ez.user.common.vo.Result;
+import com.ydp.ez.user.entity.Module;
 import com.ydp.ez.user.service.IRoleService;
-import com.ydp.ez.user.service.IUserService;
+import com.ydp.ez.user.service.impl.ModuleService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
@@ -23,19 +21,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @Slf4j
-public class RoleController extends BaseController {
+public class ModuleController extends BaseController {
 
     @Autowired
-    private IRoleService roleService;
+    private ModuleService moduleService;
 
 
-    @RequestMapping("/role/add")
+    @RequestMapping("/module/add")
     @ResponseBody
-    @Log(prefix = "添加角色")
-    public Result register(String roleName, String roleDesc) {
+    @Log(prefix = "添加模块")
+    public Result register(Integer parentId, String moduleName, String moduleDesc, String subSystem) {
         Result result = null;
         try {
-            result = success(roleService.addRole(roleName, roleDesc));
+            result = success(moduleService.addModule(parentId, moduleName, moduleDesc, subSystem));
         } catch (UserException e) {
             log.warn("/role/add error ", e);
             result = error(e.getCode(), e.getMessage());
@@ -47,54 +45,55 @@ public class RoleController extends BaseController {
     }
 
 
-    @RequestMapping("/role/query")
+    @RequestMapping("/module/query")
     @ResponseBody
-    @Log(prefix = "角色查询")
-    public Result login(Integer id, String roleName) {
+    @Log(prefix = "模块查询")
+    public Result moduleQuery(Integer id, String moduleName, String subSystem) {
         Result result = new Result();
         try {
-            result = success(roleService.queryRoleList(id, roleName));
+            result = success(moduleService.queryModuleList(id, moduleName, subSystem));
         } catch (Exception e) {
-            log.error("/login system error {}-{}", e.getMessage(), e);
+            log.error("/module/query system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
         }
         return result;
     }
 
 
-    @RequestMapping("/role/update")
+    @RequestMapping("/module/update")
     @ResponseBody
-    @Log(prefix = "角色更新")
+    @Log(prefix = "模块更新")
     @Authentication
-    public Result roleUpdate(Integer id, String roleName, String roleDesc) {
+    public Result moduleUpdate(Integer id, Integer parentId, String moduleName, String moduleDesc, String subSystem) {
         Result result = new Result();
         try {
-            result = success(roleService.updateRole(id, roleName, roleDesc));
+            result = success(moduleService.updateModule(id, parentId, moduleName, moduleDesc, subSystem));
         } catch (UserException e) {
-            log.warn("/role/update error ", e);
+            log.warn("/module/update error ", e);
             result = error(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("/role/update system error {}-{}", e.getMessage(), e);
+            log.error("/module/update system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
         }
         return result;
     }
 
-    @RequestMapping("/role/delete")
+    @RequestMapping("/module/delete")
     @ResponseBody
-    @Log(prefix = "角色更新")
+    @Log(prefix = "模块逻辑删除")
     @Authentication
     public Result roleUpdate(Integer id) {
         Result result = new Result();
         try {
-            result = success(roleService.deleteRole(id));
+            result = success(moduleService.logicalDeleteModule(id));
         } catch (UserException e) {
-            log.warn("/role/delete error ", e);
+            log.warn("/module/delete error ", e);
             result = error(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("/role/delete system error {}-{}", e.getMessage(), e);
+            log.error("/module/delete system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
         }
         return result;
     }
+
 }

@@ -16,25 +16,16 @@ import java.util.List;
 public interface IUserService {
 
     /**
-     * 用户注册
-     *
-     * @param username
-     * @param password
-     * @param email
-     * @param validCode
-     * @return
-     * @throws UserException
-     */
-    UserRespVo register(String username, String password, String email, String validCode) throws UserException;
-
-    /**
-     * 登录
+     * 添加用户
      *
      * @param userName
      * @param password
-     * @return
+     * @param salt
+     * @param email
+     * @throws UserException
      */
-    UserRespVo login(String userName, String password) throws UserException;
+    boolean addUser(String userName, String password, String salt, String email) throws UserException;
+
 
     /**
      * 获取信息
@@ -43,19 +34,4 @@ public interface IUserService {
      * @return
      */
     User queryByUserName(String userName);
-
-    /**
-     * 发送验证码
-     */
-    void sendValidCode(String email) throws UserException;
-
-    /**
-     * 验证验证码
-     *
-     * @param email
-     * @param validCode
-     * @return
-     */
-    boolean verifyValidCode(String email, String validCode);
-
 }

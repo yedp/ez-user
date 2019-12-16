@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ydp.ez.user.mapper.ModuleMapper">
+    <resultMap id="BaseResultMap" type="com.ydp.ez.user.entity.Module">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
+        <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
+        <result column="module_desc" property="moduleDesc" jdbcType="VARCHAR"/>
+        <result column="sub_system" property="subSystem" jdbcType="VARCHAR"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, parent_id, module_name, module_desc, sub_system, add_time, modify_time, is_delete
+  </sql>
+    <select id="queryModuleList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from module
+        <where>
+            is_delete = 0
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="moduleName != null and moduleName != ''">
+                and module_name = #{moduleName}
+            </if>
+            <if test="subSystem != null and subSystem !=''">
+                and sub_system = #{subSystem}
+            </if>
+        </where>
+        limit 100
+    </select>
+
+    <insert id="insert">
+    insert into module (parent_id, module_name,module_desc, sub_system, add_time)
+    values (#{parentId}, #{moduleName},#{moduleDesc}, #{subSystem}, now())
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ydp.ez.user.entity.Module">
+        update module
+        <set>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="moduleName != null">
+                module_name = #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleDesc != null">
+                module_desc = #{moduleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="subSystem != null">
+                sub_system = #{subSystem,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="logicalDelete">
+        upeate module
+        <set>
+            is_delete = 1
+        </set>
+        <where>
+            is_delete = 0
+            and id = #{id}
+        </where>
+        limit 1
+    </update>
+</mapper>
