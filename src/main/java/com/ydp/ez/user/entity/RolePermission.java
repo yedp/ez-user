@@ -4,12 +4,16 @@ import lombok.Data;
 
 import java.util.Date;
 @Data
-public class UserRoleRelation {
-    private Long id;
-
-    private Long userId;
+public class RolePermission {
+    private Integer id;
 
     private Integer roleId;
+
+    private String interfaceName;
+
+    private Integer permission;
+
+    private Long operatorId;
 
     private Date addTime;
 

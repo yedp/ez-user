@@ -22,7 +22,7 @@ public interface IModuleService {
      * @param subSystem
      * @return
      */
-    boolean addModule(Integer parentId, String moduleName, String moduleDesc, String subSystem) throws UserException;
+    boolean addModule(Integer parentId, String moduleName, String moduleDesc,String intefaceName, String subSystem) throws UserException;
 
     /**
      * 修改模块
@@ -33,7 +33,7 @@ public interface IModuleService {
      * @param subSystem
      * @return
      */
-    boolean updateModule(Integer id, Integer parentId, String moduleName, String moduleDesc, String subSystem) throws UserException;
+    boolean updateModule(Integer id, Integer parentId, String moduleName, String moduleDesc, String intefaceName,String subSystem) throws UserException;
 
     /**
      * 逻辑删除模块

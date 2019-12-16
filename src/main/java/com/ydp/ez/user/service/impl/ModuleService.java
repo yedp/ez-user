@@ -23,7 +23,7 @@ public class ModuleService implements IModuleService {
     ModuleMapper moduleMapper;
 
     @Override
-    public boolean addModule(Integer parentId, String moduleName, String moduleDesc, String subSystem) throws UserException {
+    public boolean addModule(Integer parentId, String moduleName, String moduleDesc, String intefaceName, String subSystem) throws UserException {
 
         if (StringUtils.isEmpty(moduleName)) {
             throw new UserException(UserErrorCode.PARAM_NULL, "模块名称");
@@ -37,18 +37,18 @@ public class ModuleService implements IModuleService {
         if (parentId == null) {
             parentId = 0;
         }
-        return moduleMapper.insert(parentId, moduleName, moduleDesc, subSystem) > 0 ? true : false;
+        return moduleMapper.insert(parentId, moduleName, moduleDesc, intefaceName, subSystem) > 0 ? true : false;
     }
 
     @Override
-    public boolean updateModule(Integer id, Integer parentId, String moduleName, String moduleDesc, String subSystem) throws UserException {
+    public boolean updateModule(Integer id, Integer parentId, String moduleName, String moduleDesc, String intefaceName, String subSystem) throws UserException {
         if (id == null) {
             throw new UserException(UserErrorCode.PARAM_NULL, "编号");
         }
         if (parentId == null && StringUtils.isEmpty(moduleName) && StringUtils.isEmpty(moduleDesc) && StringUtils.isEmpty(subSystem)) {
             throw new UserException(UserErrorCode.PARAM_NULL, "参数不能全为空");
         }
-        return moduleMapper.updateByPrimaryKeySelective(id, parentId, moduleName, moduleDesc, subSystem) > 0 ? true : false;
+        return moduleMapper.updateByPrimaryKeySelective(id, parentId, moduleName, moduleDesc, intefaceName, subSystem) > 0 ? true : false;
     }
 
     @Override

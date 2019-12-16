@@ -30,10 +30,10 @@ public class ModuleController extends BaseController {
     @RequestMapping("/module/add")
     @ResponseBody
     @Log(prefix = "添加模块")
-    public Result register(Integer parentId, String moduleName, String moduleDesc, String subSystem) {
+    public Result register(Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = null;
         try {
-            result = success(moduleService.addModule(parentId, moduleName, moduleDesc, subSystem));
+            result = success(moduleService.addModule(parentId, moduleName, moduleDesc, interfaceName, subSystem));
         } catch (UserException e) {
             log.warn("/role/add error ", e);
             result = error(e.getCode(), e.getMessage());
@@ -64,10 +64,10 @@ public class ModuleController extends BaseController {
     @ResponseBody
     @Log(prefix = "模块更新")
     @Authentication
-    public Result moduleUpdate(Integer id, Integer parentId, String moduleName, String moduleDesc, String subSystem) {
+    public Result moduleUpdate(Integer id, Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = new Result();
         try {
-            result = success(moduleService.updateModule(id, parentId, moduleName, moduleDesc, subSystem));
+            result = success(moduleService.updateModule(id, parentId, moduleName, moduleDesc, interfaceName, subSystem));
         } catch (UserException e) {
             log.warn("/module/update error ", e);
             result = error(e.getCode(), e.getMessage());

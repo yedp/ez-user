@@ -16,6 +16,8 @@ public class Module {
 
     private String subSystem;
 
+    private String interfaceName;
+
     private Date addTime;
 
     private Date modifyTime;

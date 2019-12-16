@@ -52,7 +52,7 @@ public class UserRoleRelationController extends BaseController {
      */
     @RequestMapping("/relation/deleteUserRoleRelation")
     @ResponseBody
-    @Log(prefix = "添加用户角色关系")
+    @Log(prefix = "删除用户角色关系")
     public Result deleteUserRoleRelation(Long id) {
         Result result = new Result();
         try {

@@ -6,13 +6,14 @@
         <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
         <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
         <result column="module_desc" property="moduleDesc" jdbcType="VARCHAR"/>
+        <result column="interface_name" property="interfaceName" javaType="VARCHAR"/>
         <result column="sub_system" property="subSystem" jdbcType="VARCHAR"/>
         <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
         <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
         <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, parent_id, module_name, module_desc, sub_system, add_time, modify_time, is_delete
+    id, parent_id, module_name, module_desc,interface_name,  sub_system, add_time, modify_time, is_delete
   </sql>
     <select id="queryModuleList" resultMap="BaseResultMap">
         select
@@ -34,8 +35,8 @@
     </select>
 
     <insert id="insert">
-    insert into module (parent_id, module_name,module_desc, sub_system, add_time)
-    values (#{parentId}, #{moduleName},#{moduleDesc}, #{subSystem}, now())
+    insert into module (parent_id, module_name,module_desc, interface_name, sub_system, add_time)
+    values (#{parentId}, #{moduleName},#{moduleDesc}, #{interfaceName}, #{subSystem}, now())
   </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.ydp.ez.user.entity.Module">
         update module
@@ -48,6 +49,9 @@
             </if>
             <if test="moduleDesc != null">
                 module_desc = #{moduleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="interfaceName != null">
+                interface_name = #{interfaceName},
             </if>
             <if test="subSystem != null">
                 sub_system = #{subSystem,jdbcType=VARCHAR},
