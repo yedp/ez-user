@@ -23,7 +23,7 @@
         <if test="roleName != null and roleName != ''">
             and role_name = #{roleName,jdbcType=VARCHAR}
         </if>
-        limit 20
+        limit 100
     </select>
 
     <insert id="insertSelective" parameterType="com.ydp.ez.user.entity.Role" useGeneratedKeys="true" keyProperty="id">
@@ -69,4 +69,15 @@
         where is_delete = 0
         and id = #{id,jdbcType=INTEGER}
     </update>
+
+    <select id="queryRoleByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_role_relation a
+        LEFT JOIN role b ON (a.role_id = b.id)
+        where a.is_delete = 0
+        and b.is_delete = 0
+        and a.user_id = #{userId}
+        limit 100
+    </select>
 </mapper>

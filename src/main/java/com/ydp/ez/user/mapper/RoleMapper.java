@@ -13,4 +13,6 @@ public interface RoleMapper {
     List<Role> queryRoleList(@Param("id") Integer id, @Param("roleName") String roleName);
 
     int updateByPrimaryKeySelective(@Param("id") Integer id, @Param("roleName") String roleName, @Param("roleDesc") String roleDesc);
+
+    List<Role> queryRoleByUserId(@Param("userId") Long userId);
 }

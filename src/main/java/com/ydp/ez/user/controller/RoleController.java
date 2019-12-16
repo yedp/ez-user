@@ -97,4 +97,65 @@ public class RoleController extends BaseController {
         }
         return result;
     }
+
+    /**
+     * 添加用户角色关系
+     *
+     * @param userId
+     * @param roleId
+     * @return
+     */
+    @RequestMapping("/role/addUserRoleRelation")
+    @ResponseBody
+    @Log(prefix = "添加用户角色关系")
+    public Result addUserRoleRelation(Long userId, Integer roleId) {
+        Result result = new Result();
+        try {
+            result = success(roleService.addUserRoleRelation(userId, roleId));
+        } catch (Exception e) {
+            log.error("/role/addUserRoleRelation system error {}-{}", e.getMessage(), e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * 添加用户角色关系
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/role/deleteUserRoleRelation")
+    @ResponseBody
+    @Log(prefix = "添加用户角色关系")
+    public Result deleteUserRoleRelation(Long id) {
+        Result result = new Result();
+        try {
+            result = success(roleService.logicalDeleteUserRoleRelation(id));
+        } catch (Exception e) {
+            log.error("/role/deleteUserRoleRelation system error {}-{}", e.getMessage(), e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * 添加用户角色关系
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/role/queryUserRoleRelation")
+    @ResponseBody
+    @Log(prefix = "查询用户角色关系")
+    public Result queryUserRoleRelation(Long userId) {
+        Result result = new Result();
+        try {
+            result = success(roleService.queryUserRoleRelationByUserId(userId));
+        } catch (Exception e) {
+            log.error("/role/queryUserRoleRelation system error {}-{}", e.getMessage(), e);
+            result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
+        }
+        return result;
+    }
 }

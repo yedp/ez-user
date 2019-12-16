@@ -36,6 +36,7 @@ public class UserService implements IUserService {
     private UserMapper userMapper;
     @Resource
     IEmailService emailService;
+
     @Autowired
     RedisUtil redisUtil;
     //用户信息redis_key
@@ -153,3 +154,4 @@ public class UserService implements IUserService {
         return result;
     }
 }
+

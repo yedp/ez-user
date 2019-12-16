@@ -4,6 +4,7 @@ import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.UserRespVo;
 import com.ydp.ez.user.entity.Role;
 import com.ydp.ez.user.entity.User;
+import com.ydp.ez.user.entity.UserRoleRelation;
 import org.springframework.data.relational.core.sql.In;
 
 import java.util.List;
@@ -49,5 +50,36 @@ public interface IRoleService {
      * @return
      */
     List<Role> queryRoleList(Integer id, String roleName);
+
+    /**
+     * 通过用户编号查询角色列表
+     *
+     * @param userId
+     * @return
+     */
+    List<Role> queryRoleByUserId(Long userId) throws UserException;
+
+
+    /**
+     * @param userId
+     * @param roleId
+     * @return
+     */
+    boolean addUserRoleRelation(Long userId, Integer roleId) throws UserException;
+
+
+    /**
+     * @param id
+     * @return
+     */
+    boolean logicalDeleteUserRoleRelation(Long id) throws UserException;
+
+    /**
+     * 查询用户角色关系列表
+     *
+     * @param userId
+     * @return
+     */
+    List<UserRoleRelation> queryUserRoleRelationByUserId(Long userId);
 
 }

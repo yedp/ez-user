@@ -3,7 +3,10 @@ package com.ydp.ez.user.service;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.UserRespVo;
 import com.ydp.ez.user.entity.User;
+import com.ydp.ez.user.entity.UserRoleRelation;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @Author: yedp
@@ -54,4 +57,5 @@ public interface IUserService {
      * @return
      */
     boolean verifyValidCode(String email, String validCode);
+
 }

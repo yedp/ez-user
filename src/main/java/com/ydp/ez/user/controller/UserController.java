@@ -10,6 +10,7 @@ import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +28,6 @@ public class UserController extends BaseController {
     private IUserService userService;
 
 
-
     @RequestMapping("/user/send-valid-code")
     @ResponseBody
     @Log(prefix = "发送验证码")
@@ -37,10 +37,10 @@ public class UserController extends BaseController {
             userService.sendValidCode(email);
             result = success();
         } catch (UserException e) {
-            log.error("/user/send-valid-code error email:{},error {}",  email, e);
+            log.error("/user/send-valid-code error email:{},error {}", email, e);
             result = error(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("/user/send-valid-code error email:{},error {}",  email, e);
+            log.error("/user/send-valid-code error email:{},error {}", email, e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
         }
         return result;
