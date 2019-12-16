@@ -1,8 +1,5 @@
 package com.ydp.ez.user.common.vo;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.ydp.ez.user.entity.User;
 import lombok.Data;
 

@@ -54,9 +54,9 @@ public class UserService implements IUserService {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
 
-//        if (!this.verifyValidCode(email, validCode)) {
-//            throw new UserException(UserErrorCode.SYSTEM_REMIND, "验证码不正确");
-//        }
+        if (!this.verifyValidCode(email, validCode)) {
+            throw new UserException(UserErrorCode.SYSTEM_REMIND, "验证码不正确");
+        }
         String salt = CodecUtil.generateRandomStr(6);
         String encodePassword = CodecUtil.encodeSha256Hash(password, salt);
         User user = new User(username, encodePassword, salt, email);
