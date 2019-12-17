@@ -17,27 +17,37 @@
     <select id="queryByRoleId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from role_module_permission
+        from role_permission
         where is_delete = 0 and role_id = #{roleId} limit 100
     </select>
 
     <insert id="insert">
-        insert into role_module_permission (role_id, interface_name, permission, operator_id, add_time)
+        insert into role_permission (role_id, interface_name, permission, operator_id, add_time)
         values ( #{roleId}, #{interfaceName}, #{permission}, #{operatorId}, now())
         ON DUPLICATE KEY UPDATE permission = #{psermission}, is_delete = 0 ,operator_id = #{operatorId}
   </insert>
     <update id="updatePermissionById">
-        update role_module_permission
+        update role_permission
         set
           permission = #{permission},
           operator_id = #{operatorId}
         where is_delete = 0 and  id = #{id}
   </update>
     <update id="logicalDelete">
-          update role_module_permission
+          update role_permission
             set
              is_delete = 1,
              operator_id = #{operatorId}
             where is_delete = 0 and  id = #{id}
     </update>
+    <select id="queryByUserId" resultMap="BaseResultMap">
+        select
+        distinct d.id, d.role_id, d.interface_name, d.permission, d.operator_id
+        from `user` a
+        INNER JOIN user_role_relation b on (a.id = b.user_id and b.is_delete = 0)
+        INNER JOIN role c on(b.role_id = c.id and c.is_delete = 0)
+        INNER JOIN role_permission d on (c.id = d.role_id and d.is_delete = 0)
+        where a.is_delete = 0 and a.id = #{userId} limit 100
+    </select>
+
 </mapper>

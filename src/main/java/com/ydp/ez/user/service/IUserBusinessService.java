@@ -16,7 +16,7 @@ public interface IUserBusinessService {
      * @return
      * @throws UserException
      */
-    UserRespVo register(String username, String password, String email, String validCode) throws UserException;
+    UserRespVo register(String username, String password, String email, String validCode, String requestIp) throws UserException;
 
     /**
      * 登录
@@ -25,7 +25,7 @@ public interface IUserBusinessService {
      * @param password
      * @return
      */
-    UserRespVo login(String userName, String password) throws UserException;
+    UserRespVo login(String userName, String password, String requestIp) throws UserException;
 
     /**
      * 发送验证码

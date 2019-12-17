@@ -13,7 +13,8 @@ public enum UserErrorCode implements ErrorCode {
     USER_CENTER_RETURN_NULL("2006", "用户中心反馈数据为空"),
     AUTH_FAIL("2007", "认证失败：%s"),
     PARAM_ERROR("2008", "参数错误:%s"),
-    LOGIN_BY_OTHER("2009", "已被其他登录挤下线"),;
+    LOGIN_BY_OTHER("2009", "已被其他登录挤下线:%s"),
+    PERMISSION_FAIL("2010", "权鉴失败");
 
 
     private String code;

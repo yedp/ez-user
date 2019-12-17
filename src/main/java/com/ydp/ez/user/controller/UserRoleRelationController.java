@@ -1,7 +1,6 @@
 package com.ydp.ez.user.controller;
 
 
-import com.ydp.ez.user.common.annotations.Log;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.service.IUserRoleRelationService;
@@ -32,7 +31,6 @@ public class UserRoleRelationController extends BaseController {
      */
     @RequestMapping("/relation/addUserRoleRelation")
     @ResponseBody
-    @Log(prefix = "添加用户角色关系")
     public Result addUserRoleRelation(Long userId, Integer roleId) {
         Result result = new Result();
         try {
@@ -52,7 +50,6 @@ public class UserRoleRelationController extends BaseController {
      */
     @RequestMapping("/relation/deleteUserRoleRelation")
     @ResponseBody
-    @Log(prefix = "删除用户角色关系")
     public Result deleteUserRoleRelation(Long id) {
         Result result = new Result();
         try {
@@ -72,7 +69,6 @@ public class UserRoleRelationController extends BaseController {
      */
     @RequestMapping("/relation/queryUserRoleRelation")
     @ResponseBody
-    @Log(prefix = "查询用户角色关系")
     public Result queryUserRoleRelation(Long userId) {
         Result result = new Result();
         try {

@@ -72,7 +72,7 @@
 
     <select id="queryRoleByUserId" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List"/>
+         b.id, b.role_name, b.role_desc
         from user_role_relation a
         LEFT JOIN role b ON (a.role_id = b.id)
         where a.is_delete = 0

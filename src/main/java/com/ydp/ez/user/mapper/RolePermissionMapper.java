@@ -13,4 +13,7 @@ public interface RolePermissionMapper {
     int updatePermissionById(@Param("id") Integer id, @Param("permission") Integer permission, @Param("operatorId") Long operatorId);
 
     int logicalDelete(@Param("id") Integer id, @Param("operatorId") Long operatorId);
+
+    List<RolePermission> queryByUserId(@Param("userId") Long userId);
+
 }

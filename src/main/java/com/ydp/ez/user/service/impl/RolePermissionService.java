@@ -4,7 +4,7 @@ import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.entity.RolePermission;
 import com.ydp.ez.user.mapper.RolePermissionMapper;
-import com.ydp.ez.user.service.IRoleModulePermissionService;
+import com.ydp.ez.user.service.IRolePermissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class RolePermissionService implements IRoleModulePermissionService {
+public class RolePermissionService implements IRolePermissionService {
     @Resource
     RolePermissionMapper permissionMapper;
 
@@ -66,5 +66,13 @@ public class RolePermissionService implements IRoleModulePermissionService {
             throw new UserException(UserErrorCode.PARAM_NULL, "操作人员编号");
         }
         return permissionMapper.logicalDelete(id, operatorId) > 0 ? true : false;
+    }
+
+    @Override
+    public List<RolePermission> queryByUserId(Long userId) throws UserException {
+        if (userId == null) {
+            throw new UserException(UserErrorCode.PARAM_NULL, "用户编号");
+        }
+        return permissionMapper.queryByUserId(userId);
     }
 }

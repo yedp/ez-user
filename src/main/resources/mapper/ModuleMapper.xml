@@ -6,7 +6,7 @@
         <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
         <result column="module_name" property="moduleName" jdbcType="VARCHAR"/>
         <result column="module_desc" property="moduleDesc" jdbcType="VARCHAR"/>
-        <result column="interface_name" property="interfaceName" javaType="VARCHAR"/>
+        <result column="interface_name" property="interfaceName" jdbcType="VARCHAR"/>
         <result column="sub_system" property="subSystem" jdbcType="VARCHAR"/>
         <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
         <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>

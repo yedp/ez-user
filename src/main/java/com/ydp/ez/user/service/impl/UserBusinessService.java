@@ -11,11 +11,11 @@ import com.ydp.ez.user.common.util.RedisUtil;
 import com.ydp.ez.user.common.util.UserConstants;
 import com.ydp.ez.user.common.vo.SessionVO;
 import com.ydp.ez.user.common.vo.UserRespVo;
+import com.ydp.ez.user.entity.Role;
+import com.ydp.ez.user.entity.RolePermission;
 import com.ydp.ez.user.entity.User;
 import com.ydp.ez.user.mapper.UserMapper;
-import com.ydp.ez.user.service.IEmailService;
-import com.ydp.ez.user.service.IUserBusinessService;
-import com.ydp.ez.user.service.IUserService;
+import com.ydp.ez.user.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,6 +38,10 @@ public class UserBusinessService implements IUserBusinessService {
     private IUserService userService;
     @Resource
     IEmailService emailService;
+    @Resource
+    IRoleService roleService;
+    @Resource
+    IRolePermissionService rolePermissionService;
 
     @Autowired
     RedisUtil redisUtil;
@@ -51,7 +56,7 @@ public class UserBusinessService implements IUserBusinessService {
 
 
     @Override
-    public UserRespVo register(String username, String password, String email, String validCode) throws UserException {
+    public UserRespVo register(String username, String password, String email, String validCode, String requestIp) throws UserException {
         if (!rateLimiter.tryAcquire()) {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
@@ -61,7 +66,7 @@ public class UserBusinessService implements IUserBusinessService {
         String salt = CodecUtil.generateRandomStr(6);
         String encodePassword = CodecUtil.encodeSha256Hash(password, salt);
         if (userService.addUser(username, encodePassword, salt, email)) {
-            return login(username, password);
+            return login(username, password, requestIp);
         }
         throw new UserException(UserErrorCode.SYSTEM_REMIND, "注册失败:用户名或者邮箱注册");
     }
@@ -74,14 +79,14 @@ public class UserBusinessService implements IUserBusinessService {
      * @return
      */
     @Override
-    public UserRespVo login(String userName, String password) throws UserException {
+    public UserRespVo login(String userName, String password, String requestIp) throws UserException {
         if (!rateLimiter.tryAcquire()) {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "系统忙，请稍后再试");
         }
         UserRespVo userRespVo = null;
         User user = userService.queryByUserName(userName);
         if (user != null && CodecUtil.verifySha256Hash(password, user.getSalt(), user.getPassword())) {
-            userRespVo = this.getUserRespVo(user, password);
+            userRespVo = this.getUserRespVo(user, password, requestIp);
         } else {
             throw new UserException(UserErrorCode.SYSTEM_REMIND, "用户名或者密码错误");
         }
@@ -95,17 +100,21 @@ public class UserBusinessService implements IUserBusinessService {
      * @param password
      * @return
      */
-    private UserRespVo getUserRespVo(User user, String password) {
+    private UserRespVo getUserRespVo(User user, String password, String requestIp) throws UserException {
         Date expireTime = new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
         String token = JWT.create().withExpiresAt(expireTime).withAudience(user.getUserName()).sign(Algorithm.HMAC256(password));
         UserRespVo userRespVo = new UserRespVo(token, user.getUserName(), user.getNickName());
         String sessionKey = String.format(UserConstants.SESSION_KEY, user.getUserName());
         SessionVO sessionVO = redisUtil.get(sessionKey, SessionVO.class);
-        if (sessionVO == null) {
-            sessionVO = new SessionVO(user);
-        }
+//        if (sessionVO == null) {
+        List<Role> roleList = roleService.queryRoleByUserId(user.getId());
+        List<RolePermission> permissionList = rolePermissionService.queryByUserId(user.getId());
+        sessionVO = new SessionVO(user, roleList, permissionList);
+//        }
         sessionVO.setToken(token);
-        redisUtil.set(sessionKey, JSON.toJSONString(sessionVO));
+        sessionVO.setRequsetIp(requestIp);
+        String sessionStr = JSON.toJSONString(sessionVO);
+        redisUtil.set(sessionKey, sessionStr);
         return userRespVo;
     }
 

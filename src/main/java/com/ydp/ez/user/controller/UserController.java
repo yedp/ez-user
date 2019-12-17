@@ -1,22 +1,24 @@
 package com.ydp.ez.user.controller;
 
 
-import com.ydp.ez.user.common.annotations.Authentication;
-import com.ydp.ez.user.common.annotations.Log;
+import com.ydp.ez.user.common.annotations.Authorize;
+import com.ydp.ez.user.common.annotations.IgnoreAuthorize;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
+import com.ydp.ez.user.common.util.IpUtils;
 import com.ydp.ez.user.common.util.WebContext;
 import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.service.IUserBusinessService;
 import com.ydp.ez.user.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Slf4j
 public class UserController extends BaseController {
+    @Resource
+    HttpServletRequest request;
 
     @Autowired
     private IUserBusinessService userBusinessService;
@@ -32,9 +36,9 @@ public class UserController extends BaseController {
     private IUserService userService;
 
 
+    @IgnoreAuthorize
     @RequestMapping("/user/send-valid-code")
     @ResponseBody
-    @Log(prefix = "发送验证码")
     public Result register(@RequestParam String email) {
         Result result = null;
         try {
@@ -51,13 +55,14 @@ public class UserController extends BaseController {
     }
 
 
+    @IgnoreAuthorize
     @RequestMapping("/user/register")
     @ResponseBody
-    @Log(prefix = "用户注册")
     public Result register(@RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam String validCode) {
         Result result = null;
         try {
-            result = success(userBusinessService.register(userName, password, email, validCode));
+            String requestIp = IpUtils.getRemoteRealIP(request);
+            result = success(userBusinessService.register(userName, password, email, validCode, requestIp));
         } catch (UserException e) {
             log.error("/register error user:{},password:{},email:{},error {}", userName, password, email, e);
             result = error(e.getCode(), e.getMessage());
@@ -76,13 +81,14 @@ public class UserController extends BaseController {
      * @param validCode 验证码
      * @return
      */
+    @IgnoreAuthorize
     @RequestMapping("/user/login")
     @ResponseBody
-    @Log(prefix = "用户登录")
     public Result login(String userName, String password, String validCode) {
         Result result = new Result();
         try {
-            result = success(userBusinessService.login(userName, password));
+            String requestIp = IpUtils.getRemoteRealIP(request);
+            result = success(userBusinessService.login(userName, password, requestIp));
         } catch (Exception e) {
             log.error("/login system error {}-{}", e.getMessage(), e);
             result = error(UserErrorCode.SYSTEM_ERROR_WITH_MSG, e.getMessage());
@@ -98,8 +104,6 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/get-session")
     @ResponseBody
-    @Log(prefix = "用户获取session")
-    @Authentication
     public Result getSession() {
         Result result = new Result();
         try {
@@ -119,7 +123,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/queryByUserName")
     @ResponseBody
-    @Authentication
+    @Authorize(roleName = "admin",permissionBit = 8)
     public Result queryByUserName(String userName) {
         Result result = new Result();
         try {

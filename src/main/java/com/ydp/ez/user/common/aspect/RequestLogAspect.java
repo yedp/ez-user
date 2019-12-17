@@ -50,7 +50,8 @@ public class RequestLogAspect {
      * 定义切入点，切入点为com.example.aop下的所有函数
      */
     @Pointcut("execution(* com.ydp.ez.user.controller..*Controller.*(..))")
-    public void controller(){}
+    public void controller() {
+    }
 
     /**
      * 将要执行切面方法时.
@@ -77,9 +78,9 @@ public class RequestLogAspect {
     /**
      * 记录请求信息.
      *
-     * @param pjp               切入点对象.
-     * @param timeBefore        方法执行前花费时间.
-     * @param result            结果.
+     * @param pjp        切入点对象.
+     * @param timeBefore 方法执行前花费时间.
+     * @param result     结果.
      */
     private RequestLog logTheRequestInfo(ProceedingJoinPoint pjp, long timeBefore, Object result) {
         RequestLog requestLog = new RequestLog();
@@ -97,7 +98,7 @@ public class RequestLogAspect {
         if (sessionVO != null) {
             requestLog.setRequestUser(sessionVO.getUserName());
             requestLog.setRequestId(sessionVO.getToken());
-            requestLog.setTrackId(sessionVO.getIp());
+            requestLog.setTrackId(sessionVO.getRequsetIp());
         }
         return requestLog;
     }
@@ -141,8 +142,8 @@ public class RequestLogAspect {
      * @return 请求日志定义对象.
      */
     private RequestLoggerDefinition getRequestLoggerDefinition(ProceedingJoinPoint pjp) {
-        RequestLoggerDefinition result    = null;
-        final Signature         signature = pjp.getSignature();
+        RequestLoggerDefinition result = null;
+        final Signature signature = pjp.getSignature();
         if (signature instanceof MethodSignature) {
             Method method = ((MethodSignature) signature).getMethod();
             result = AnnotationUtils.getAnnotation(method, RequestLoggerDefinition.class);
@@ -153,13 +154,13 @@ public class RequestLogAspect {
     /**
      * 放入请求参数.
      *
-     * @param pjp               连接点对象.
+     * @param pjp        连接点对象.
      * @param requestLog 请求日志对象.
      */
     private void fillCallArguments(ProceedingJoinPoint pjp, RequestLog requestLog) {
         final Object[] arguments = pjp.getArgs();
         if (ArrayUtils.isNotEmpty(arguments)) {
-            List<Object> argLi     = Arrays.asList(arguments);
+            List<Object> argLi = Arrays.asList(arguments);
             List<Object> argNeedLi = new ArrayList<>();
             for (Object arg : argLi) {
                 if (arg instanceof ServletRequest || arg instanceof ServletResponse) {

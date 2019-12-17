@@ -1,13 +1,9 @@
 package com.ydp.ez.user.controller;
 
 
-import com.ydp.ez.user.common.annotations.Authentication;
-import com.ydp.ez.user.common.annotations.Log;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.Result;
-import com.ydp.ez.user.entity.Module;
-import com.ydp.ez.user.service.IRoleService;
 import com.ydp.ez.user.service.impl.ModuleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,6 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/add")
     @ResponseBody
-    @Log(prefix = "添加模块")
     public Result register(Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = null;
         try {
@@ -47,7 +42,6 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/query")
     @ResponseBody
-    @Log(prefix = "模块查询")
     public Result moduleQuery(Integer id, String moduleName, String subSystem) {
         Result result = new Result();
         try {
@@ -62,8 +56,6 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/update")
     @ResponseBody
-    @Log(prefix = "模块更新")
-    @Authentication
     public Result moduleUpdate(Integer id, Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = new Result();
         try {
@@ -80,8 +72,6 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/delete")
     @ResponseBody
-    @Log(prefix = "模块逻辑删除")
-    @Authentication
     public Result roleUpdate(Integer id) {
         Result result = new Result();
         try {

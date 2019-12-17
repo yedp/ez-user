@@ -27,5 +27,4 @@ public interface IUserRoleRelationService {
      * @return
      */
     List<UserRoleRelation> queryUserRoleRelationByUserId(Long userId);
-
 }
