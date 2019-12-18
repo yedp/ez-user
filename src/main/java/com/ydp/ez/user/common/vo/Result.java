@@ -14,8 +14,8 @@ public class Result implements Serializable {
     private static final long serialVersionUID = 1L;
     private Object content;
     private String status;
-    private String code;
-    private String message;
+    private String code = "1";
+    private String message = "成功";
 
     public Result() {
     }
