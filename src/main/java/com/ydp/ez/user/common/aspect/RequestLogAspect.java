@@ -85,6 +85,7 @@ public class RequestLogAspect {
      */
     private RequestLog logTheRequestInfo(ProceedingJoinPoint pjp, long timeBefore, Object result) {
         RequestLog requestLog = new RequestLog();
+        requestLog.setTrackId(this.getTrackId());
         requestLog.setRequestIp(this.getRequestIp());
         requestLog.setRequestUri(this.getRequestUri());
         fillCallArguments(pjp, requestLog);
@@ -98,7 +99,6 @@ public class RequestLogAspect {
         SessionVO sessionVO = WebContext.getContext();
         if (sessionVO != null) {
             requestLog.setOperatorId(sessionVO.getUserId());
-            requestLog.setTrackId(sessionVO.getToken());
         }
         return requestLog;
     }
@@ -190,6 +190,14 @@ public class RequestLogAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request != null) {
             return IpUtils.getRemoteRealIP(request);
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private String getTrackId() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        if (request != null) {
+            return request.getHeader("trackId");
         }
         return StringUtils.EMPTY;
     }

@@ -48,6 +48,9 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
 
+        /**
+         * 0：服务端访问用签名
+         */
         String signature = httpServletRequest.getHeader("signature");
         if (StringUtils.isNotEmpty(signature)) {
             Enumeration<String> paramEnum = httpServletRequest.getParameterNames();
