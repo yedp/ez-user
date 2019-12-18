@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,10 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
@@ -49,6 +47,31 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
         }
         HandlerMethod handlerMethod = (HandlerMethod) object;
         Method method = handlerMethod.getMethod();
+
+        String signature = httpServletRequest.getHeader("signature");
+        if (StringUtils.isNotEmpty(signature)) {
+            Enumeration<String> paramEnum = httpServletRequest.getParameterNames();
+            List<String> strList = new ArrayList<>();
+            while (paramEnum.hasMoreElements()) {
+                String param = httpServletRequest.getParameter(paramEnum.nextElement());
+                if (StringUtils.isNotEmpty(param)) {
+                    strList.add(param);
+                }
+            }
+            if (CollectionUtils.isEmpty(strList)) {
+                strList.add("signature");
+            }
+            Collections.sort(strList);
+            StringBuilder builder = new StringBuilder();
+            for (String tmp : strList) {
+                builder.append(tmp).append(",");
+            }
+            String str = builder.toString();
+            str = str.substring(0, str.length() - 1);
+            if (signature.equals(str)) {
+                return true;
+            }
+        }
 
         /**
          * 1、是否忽略验证授权
