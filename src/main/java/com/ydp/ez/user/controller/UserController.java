@@ -123,7 +123,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping("/user/queryByUserName")
     @ResponseBody
-    @Authorize(permissionBit = 8)
+    @Authorize(permissionBit = 1)
     public Result queryByUserName(String userName) {
         Result result = new Result();
         try {

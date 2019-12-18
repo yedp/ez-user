@@ -2,6 +2,7 @@ package com.ydp.ez.user.controller;
 
 
 
+import com.ydp.ez.user.common.annotations.Authorize;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.util.WebContext;
@@ -33,6 +34,7 @@ public class RolePermissionController extends BaseController {
      */
     @RequestMapping("/permission/add")
     @ResponseBody
+    @Authorize(permissionBit = 8)
     public Result addUserRoleRelation(Integer roleId, String interfaceName, Integer permission) {
         Result result = new Result();
         try {
@@ -55,6 +57,7 @@ public class RolePermissionController extends BaseController {
      */
     @RequestMapping("/permission/delete")
     @ResponseBody
+    @Authorize(permissionBit = 4)
     public Result deleteUserRoleRelation(Integer id) {
         Result result = new Result();
         try {
@@ -73,6 +76,7 @@ public class RolePermissionController extends BaseController {
      */
     @RequestMapping("/permission/update")
     @ResponseBody
+    @Authorize(permissionBit = 2)
     public Result addUserRoleRelation(Integer id, Integer permission) {
         Result result = new Result();
         try {
@@ -91,6 +95,7 @@ public class RolePermissionController extends BaseController {
      */
     @RequestMapping("/permission/query")
     @ResponseBody
+    @Authorize(permissionBit = 1)
     public Result queryPermission(Integer roleId) {
         Result result = new Result();
         try {

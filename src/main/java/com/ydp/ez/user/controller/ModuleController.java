@@ -1,6 +1,7 @@
 package com.ydp.ez.user.controller;
 
 
+import com.ydp.ez.user.common.annotations.Authorize;
 import com.ydp.ez.user.common.exception.UserErrorCode;
 import com.ydp.ez.user.common.exception.UserException;
 import com.ydp.ez.user.common.vo.Result;
@@ -25,6 +26,7 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/add")
     @ResponseBody
+    @Authorize(permissionBit = 8)
     public Result register(Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = null;
         try {
@@ -42,6 +44,7 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/query")
     @ResponseBody
+    @Authorize(permissionBit = 1)
     public Result moduleQuery(Integer id, String moduleName, String subSystem) {
         Result result = new Result();
         try {
@@ -56,6 +59,7 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/update")
     @ResponseBody
+    @Authorize(permissionBit = 2)
     public Result moduleUpdate(Integer id, Integer parentId, String moduleName, String moduleDesc, String interfaceName, String subSystem) {
         Result result = new Result();
         try {
@@ -72,6 +76,7 @@ public class ModuleController extends BaseController {
 
     @RequestMapping("/module/delete")
     @ResponseBody
+    @Authorize(permissionBit = 4)
     public Result roleUpdate(Integer id) {
         Result result = new Result();
         try {
