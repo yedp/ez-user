@@ -4,13 +4,16 @@ package com.ydp.ez.user.service.impl;
 import com.ydp.ez.user.entity.RequestLog;
 import com.ydp.ez.user.mapper.RequestLogMapper;
 import com.ydp.ez.user.service.ILogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Calendar;
+import java.util.Date;
 
 @Service
+@Slf4j
 public class LogService implements ILogService {
     /**
      * 请求日志表名前缀.
@@ -29,8 +32,14 @@ public class LogService implements ILogService {
      */
     @Async
     public void addLog(RequestLog requestLog) {
-        String tableName = String.format(TABLE_NAME, Calendar.getInstance().get(Calendar.YEAR));
-        requestLog.setTableName(tableName);
-        requestLogMapper.insertSelective(requestLog);
+        try {
+            String tableName = String.format(TABLE_NAME, Calendar.getInstance().get(Calendar.YEAR));
+            requestLog.setTableName(tableName);
+            requestLogMapper.insertSelective(requestLog);
+        }catch (Exception e){
+            log.error("{}",e);
+        }finally {
+            log.info("{}",requestLog);
+        }
     }
 }
