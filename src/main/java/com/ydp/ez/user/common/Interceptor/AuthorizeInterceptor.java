@@ -56,31 +56,28 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
         if (method.isAnnotationPresent(IgnoreAuthorize.class)) {
             return true;
         }
-        //2、token判断
+        //2、是否有权限注解，没有则返回true
+        Authorize authorize = AnnotationUtils.findAnnotation(method, Authorize.class);
+        if (Objects.isNull(authorize)) {
+            return true;
+        }
+        //3、token判断
         String token = httpServletRequest.getParameter(UserConstants.HTTP_PARAMETER_REQUEST_TOKEN_KEY);
         if (StringUtils.isEmpty(token)) {
             error(httpServletResponse, UserErrorCode.AUTH_FAIL, "请重新登录");
             return false;
         }
-        //3、session是否存在
+        //4、session是否存在
         SessionVO sessionVO = this.getSession(token);
         if (sessionVO == null) {
             error(httpServletResponse, UserErrorCode.AUTH_FAIL, "请重新登录");
             return false;
         }
-        //4、token是否有效
+        //5、token是否有效
         if (!token.equals(sessionVO.getToken())) {
             error(httpServletResponse, UserErrorCode.LOGIN_BY_OTHER, sessionVO.getRequsetIp());
             return false;
         }
-
-        //5、是否有权限注解，没有则返回true
-        Authorize authorize = AnnotationUtils.findAnnotation(method, Authorize.class);
-        if (Objects.isNull(authorize)) {
-            WebContext.registry(sessionVO);
-            return true;
-        }
-
 
         //6、权限判断
         if (authorize.permissionBit() < 16) {
