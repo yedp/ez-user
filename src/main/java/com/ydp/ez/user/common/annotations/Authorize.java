@@ -14,13 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorize {
     /**
-     * 角色名称：默认不需要角色（只需要登录就可以）
-     *
-     * @return
-     */
-    String roleName() default Strings.EMPTY;
-
-    /**
      * 权限：默认不需要权限（只需要登录就可以）
      *
      * @return

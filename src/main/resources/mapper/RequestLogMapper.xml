@@ -1,95 +1,88 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ydp.ez.user.mapper.RequestLogMapper" >
-  <resultMap id="BaseResultMap" type="com.ydp.ez.user.entity.RequestLog" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="track_id" property="trackId" jdbcType="VARCHAR" />
-    <result column="request_url" property="requestUrl" jdbcType="VARCHAR" />
-    <result column="request_params" property="requestParams" jdbcType="VARCHAR" />
-    <result column="request_result" property="requestResult" jdbcType="VARCHAR" />
-    <result column="request_user" property="requestUser" jdbcType="VARCHAR" />
-    <result column="request_id" property="requestId" jdbcType="VARCHAR" />
-    <result column="server_type" property="serverType" jdbcType="VARCHAR" />
-    <result column="request_time" property="requestTime" jdbcType="TIMESTAMP" />
-    <result column="return_time" property="returnTime" jdbcType="TIMESTAMP" />
-    <result column="time_spend" property="timeSpend" jdbcType="INTEGER" />
-    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ydp.ez.user.mapper.RequestLogMapper">
+  <resultMap id="BaseResultMap" type="com.ydp.ez.user.entity.RequestLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="track_id" jdbcType="VARCHAR" property="trackId" />
+    <result column="request_ip" jdbcType="VARCHAR" property="requestIp" />
+    <result column="request_uri" jdbcType="VARCHAR" property="requestUri" />
+    <result column="params" jdbcType="VARCHAR" property="params" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="sub_system" jdbcType="VARCHAR" property="subSystem" />
+    <result column="request_time" jdbcType="TIMESTAMP" property="requestTime" />
+    <result column="return_time" jdbcType="TIMESTAMP" property="returnTime" />
+    <result column="time_spend" jdbcType="INTEGER" property="timeSpend" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, track_id, request_url, request_params, request_result, request_user, request_id, 
-    server_type, request_time, return_time, time_spend, add_time
+  <sql id="Base_Column_List">
+    id, track_id, request_ip, request_uri, params, result, operator_id, sub_system, request_time, 
+    return_time, time_spend, add_time
   </sql>
-
-  <insert id="insertSelective" parameterType="com.ydp.ez.user.entity.RequestLog" >
+  <insert id="insertSelective" parameterType="com.ydp.ez.user.entity.RequestLog">
     insert into ${tableName}
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="trackId != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="trackId != null">
         track_id,
       </if>
-      <if test="requestUrl != null" >
-        request_url,
+      <if test="requestIp != null">
+        request_ip,
       </if>
-      <if test="requestParams != null" >
-        request_params,
+      <if test="requestUri != null">
+        request_uri,
       </if>
-      <if test="requestResult != null" >
-        request_result,
+      <if test="params != null">
+        params,
       </if>
-      <if test="requestUser != null" >
-        request_user,
+      <if test="result != null">
+        result,
       </if>
-      <if test="requestId != null" >
-        request_id,
+      <if test="operatorId != null">
+        operator_id,
       </if>
-      <if test="serverType != null" >
-        server_type,
+      <if test="subSystem != null">
+        sub_system,
       </if>
-      <if test="requestTime != null" >
+      <if test="requestTime != null">
         request_time,
       </if>
-      <if test="returnTime != null" >
+      <if test="returnTime != null">
         return_time,
       </if>
-      <if test="timeSpend != null" >
+      <if test="timeSpend != null">
         time_spend,
       </if>
         add_time
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="trackId != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="trackId != null">
         #{trackId,jdbcType=VARCHAR},
       </if>
-      <if test="requestUrl != null" >
-        #{requestUrl,jdbcType=VARCHAR},
+      <if test="requestIp != null">
+        #{requestIp,jdbcType=VARCHAR},
       </if>
-      <if test="requestParams != null" >
-        #{requestParams,jdbcType=VARCHAR},
+      <if test="requestUri != null">
+        #{requestUri,jdbcType=VARCHAR},
       </if>
-      <if test="requestResult != null" >
-        #{requestResult,jdbcType=VARCHAR},
+      <if test="params != null">
+        #{params,jdbcType=VARCHAR},
       </if>
-      <if test="requestUser != null" >
-        #{requestUser,jdbcType=VARCHAR},
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
       </if>
-      <if test="requestId != null" >
-        #{requestId,jdbcType=VARCHAR},
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=BIGINT},
       </if>
-      <if test="serverType != null" >
-        #{serverType,jdbcType=VARCHAR},
+      <if test="subSystem != null">
+        #{subSystem,jdbcType=VARCHAR},
       </if>
-      <if test="requestTime != null" >
+      <if test="requestTime != null">
         #{requestTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="returnTime != null" >
+      <if test="returnTime != null">
         #{returnTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeSpend != null" >
+      <if test="timeSpend != null">
         #{timeSpend,jdbcType=INTEGER},
       </if>
       now()

@@ -2,6 +2,7 @@ package com.ydp.ez.user.common.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.ydp.ez.user.common.annotations.RequestLoggerDefinition;
+import com.ydp.ez.user.common.util.IpUtils;
 import com.ydp.ez.user.common.util.WebContext;
 
 import com.ydp.ez.user.common.vo.SessionVO;
@@ -84,21 +85,20 @@ public class RequestLogAspect {
      */
     private RequestLog logTheRequestInfo(ProceedingJoinPoint pjp, long timeBefore, Object result) {
         RequestLog requestLog = new RequestLog();
-//        requestLog.setTrackId();
-        requestLog.setRequestUrl(getRequestPath());
+        requestLog.setRequestIp(this.getRequestIp());
+        requestLog.setRequestUri(this.getRequestUri());
         fillCallArguments(pjp, requestLog);
         requestLog.setRequestTime(new Date(timeBefore));
         final long timeAfter = System.currentTimeMillis();
         requestLog.setReturnTime(new Date(timeAfter));
         final long timeSpend = timeAfter - timeBefore;
-        requestLog.setRequestResult(JSON.toJSONString(result));
+        requestLog.setResult(JSON.toJSONString(result));
         requestLog.setTimeSpend(timeSpend);
-        requestLog.setServerType("ez-user");
+        requestLog.setSubSystem("ez-user");
         SessionVO sessionVO = WebContext.getContext();
         if (sessionVO != null) {
-            requestLog.setRequestUser(sessionVO.getUserName());
-            requestLog.setRequestId(sessionVO.getToken());
-            requestLog.setTrackId(sessionVO.getRequsetIp());
+            requestLog.setOperatorId(sessionVO.getUserId());
+            requestLog.setTrackId(sessionVO.getToken());
         }
         return requestLog;
     }
@@ -110,9 +110,9 @@ public class RequestLogAspect {
      * @return true/false.
      */
     private boolean checkNeedLog(ProceedingJoinPoint pjp) {
-        final String requestPath = getRequestPath();
-        logger.debug("The request path is {}", requestPath);
-        if (StringUtils.isBlank(requestPath)) {
+        final String requestUri = this.getRequestUri();
+        logger.debug("The request path is {}", requestUri);
+        if (StringUtils.isBlank(requestUri)) {
             logger.warn("The request path is empty when call the join point {} - so no need log.", pjp);
             return false;
         }
@@ -121,13 +121,13 @@ public class RequestLogAspect {
             return true;
         }
         if (requestLoggerDefinition.ignore()) {
-            logger.debug("The request log definition - is ignore is true, not log the request {}", requestPath);
+            logger.debug("The request log definition - is ignore is true, not log the request {}", requestUri);
             return false;
         }
         if (ArrayUtils.isNotEmpty(requestLoggerDefinition.ignorePaths())) {
             for (String ignorePath : requestLoggerDefinition.ignorePaths()) {
-                if (StringUtils.lastIndexOf(requestPath, ignorePath) > -1) {
-                    logger.debug("The ignorePath {} is match the request path {}", ignorePath, requestPath);
+                if (StringUtils.lastIndexOf(requestUri, ignorePath) > -1) {
+                    logger.debug("The ignorePath {} is match the request path {}", ignorePath, requestUri);
                     return false;
                 }
             }
@@ -168,7 +168,7 @@ public class RequestLogAspect {
                 }
                 argNeedLi.add(arg);
             }
-            requestLog.setRequestParams(JSON.toJSONString(argNeedLi));
+            requestLog.setParams(JSON.toJSONString(argNeedLi));
         }
     }
 
@@ -178,11 +178,20 @@ public class RequestLogAspect {
      *
      * @return 接口请求路径.
      */
-    private String getRequestPath() {
+    private String getRequestUri() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request != null) {
-            return request.getRequestURL().toString();
+            return request.getRequestURI();
         }
         return StringUtils.EMPTY;
     }
+
+    private String getRequestIp() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        if (request != null) {
+            return IpUtils.getRemoteRealIP(request);
+        }
+        return StringUtils.EMPTY;
+    }
+
 }

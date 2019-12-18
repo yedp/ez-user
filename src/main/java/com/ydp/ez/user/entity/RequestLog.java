@@ -1,83 +1,55 @@
 package com.ydp.ez.user.entity;
 
+import com.ydp.ez.user.common.util.StringUtils;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 
 @Data
 public class RequestLog {
+    private Long id;
+
+    private String trackId;
+
+    private String requestIp;
+
+    private String requestUri;
+
+    private String params;
+
+    private String result;
+
+    private Long operatorId;
+
+    private String subSystem;
+
+    private Date requestTime;
+
+    private Date returnTime;
+
+    private Long timeSpend;
+
+    private Date addTime;
+
     private String tableName;
 
-    private long id;
-
-    /**
-     * 50.
-     */
-    private String trackId;
-    /**
-     * 200
-     */
-    private String requestUrl;
-    /**
-     * 2000
-     */
-    private String requestParams;
-    /**
-     * 4000
-     */
-    private String requestResult;
-    /**
-     * 32
-     */
-    private String requestUser;
-    /**
-     * 50
-     */
-    private String requestId;
-    private Date requestTime;
-    private Date   returnTime;
-    private Date   addTime;
-    private String serverType;
-    private long   timeSpend;
-
-
-    /**
-     * 获取requestUrl.
-     *
-     * @param requestUrl 要设置的requestUrl
-     */
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = checkLength(requestUrl, 200);
-    }
-    public void setRequestParams(String requestParams) {
-        this.requestParams = checkLength(requestParams, 4000);
-    }
-    public void setRequestResult(String requestResult) {
-        this.requestResult = checkLength(requestResult, 4000);
-    }
-    public void setRequestUser(String requestUser) {
-        this.requestUser = checkLength(requestUser, 32);
-    }
-    public void setRequestId(String requestId) {
-        this.requestId = checkLength(requestId, 50);
+    public void setTrackId(String trackId) {
+        this.trackId = StringUtils.lengthEnsure(trackId, 50);
     }
 
-    /**
-     * 检查长度.
-     *
-     * @param requestResult 请求结果.
-     * @param len           长度.
-     * @return 检查结果.
-     */
-    private String checkLength(String requestResult, int len) {
-        if (StringUtils.isBlank(requestResult)) {
-            return requestResult;
-        }
-        if (requestResult.length() <= len) {
-            return requestResult;
-        } else {
-            return requestResult.substring(0, len);
-        }
+    public void setRequestUri(String requestUri) {
+        this.requestUri = StringUtils.lengthEnsure(requestUri, 80);
+    }
+
+    public void setParams(String params) {
+        this.params = StringUtils.lengthEnsure(params, 4000);
+    }
+
+    public void setResult(String result) {
+        this.result = StringUtils.lengthEnsure(result, 4000);
+    }
+
+    public void setSubSystem(String subSystem) {
+        this.subSystem = StringUtils.lengthEnsure(subSystem, 50);
     }
 }

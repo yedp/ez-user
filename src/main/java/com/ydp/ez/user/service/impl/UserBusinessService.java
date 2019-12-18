@@ -105,12 +105,9 @@ public class UserBusinessService implements IUserBusinessService {
         String token = JWT.create().withExpiresAt(expireTime).withAudience(user.getUserName()).sign(Algorithm.HMAC256(password));
         UserRespVo userRespVo = new UserRespVo(token, user.getUserName(), user.getNickName());
         String sessionKey = String.format(UserConstants.SESSION_KEY, user.getUserName());
-        SessionVO sessionVO = redisUtil.get(sessionKey, SessionVO.class);
-//        if (sessionVO == null) {
         List<Role> roleList = roleService.queryRoleByUserId(user.getId());
         List<RolePermission> permissionList = rolePermissionService.queryByUserId(user.getId());
-        sessionVO = new SessionVO(user, roleList, permissionList);
-//        }
+        SessionVO sessionVO = new SessionVO(user, roleList, permissionList);
         sessionVO.setToken(token);
         sessionVO.setRequsetIp(requestIp);
         String sessionStr = JSON.toJSONString(sessionVO);

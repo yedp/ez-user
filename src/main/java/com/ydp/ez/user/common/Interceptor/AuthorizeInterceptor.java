@@ -13,6 +13,8 @@ import com.ydp.ez.user.common.vo.Result;
 import com.ydp.ez.user.common.vo.SessionVO;
 import com.ydp.ez.user.entity.Role;
 import com.ydp.ez.user.entity.RolePermission;
+import com.ydp.ez.user.service.IRolePermissionService;
+import com.ydp.ez.user.service.IRoleService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -34,6 +36,10 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    IRoleService roleService;
+    @Autowired
+    IRolePermissionService permissionService;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
@@ -75,27 +81,23 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        //6、角色需求判断
-        if (StringUtils.isNotEmpty(authorize.roleName())) {
+
+        //6、权限判断
+        if (authorize.permissionBit() < 16) {
+            sessionVO.setRoleMap(roleService.queryRoleByUserId(sessionVO.getUserId()));
+            sessionVO.setRolePermissionMap(permissionService.queryByUserId(sessionVO.getUserId()));
+            //超级管理员拥有所有权限
             Map<String, Role> roleMap = sessionVO.getRoleMap();
             if (roleMap != null) {
-                if (roleMap.get("super_admin") != null) {
-                    WebContext.registry(sessionVO);
-                    return true;
-                } else if (roleMap.get(authorize.roleName()) == null) {
-                    error(httpServletResponse, UserErrorCode.PERMISSION_FAIL);
-                    return false;
+                if (roleMap.get("super_admin") == null) {
+                    String interfaceName = httpServletRequest.getRequestURI();
+                    Map<String, RolePermission> permissionMap = sessionVO.getRolePermissionMap();
+                    if (permissionMap == null || permissionMap == null && permissionMap.get(interfaceName) == null
+                            || (permissionMap.get(interfaceName).getPermission().intValue() & authorize.permissionBit()) == 0) {
+                        error(httpServletResponse, UserErrorCode.PERMISSION_FAIL);
+                        return false;
+                    }
                 }
-            }
-        }
-        //8、权限判断
-        if (authorize.permissionBit() < 16) {
-            String interfaceName = httpServletRequest.getRequestURI();
-            Map<String, RolePermission> permissionMap = sessionVO.getRolePermissionMap();
-            if (permissionMap == null || permissionMap == null && permissionMap.get(interfaceName) == null
-                    || (permissionMap.get(interfaceName).getPermission().intValue() & authorize.permissionBit()) == 0) {
-                error(httpServletResponse, UserErrorCode.PERMISSION_FAIL);
-                return false;
             }
         }
         WebContext.registry(sessionVO);

@@ -66,7 +66,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="role_permission" domainObjectName="RolePermission"
+        <table tableName="request_log" domainObjectName="RequestLog"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

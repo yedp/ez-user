@@ -30,16 +30,9 @@ public class SessionVO implements Serializable {
 
     public SessionVO(User user, List<Role> roleList, List<RolePermission> rolePermissionList) {
         this(user);
-        if (!CollectionUtils.isEmpty(roleList)) {
-            /**
-             * toMap 如果集合对象有重复的key，会报错Duplicate key ...
-             * 可以用 (key1,key2)->key1 来设置，如果有重复的key,则保留key1,舍弃key2
-             */
-            this.roleMap = roleList.stream().collect(Collectors.toMap(Role::getRoleName, role -> role, (key1, key2) -> key1));
-        }
-        if (!CollectionUtils.isEmpty(rolePermissionList)) {
-            this.rolePermissionMap = rolePermissionList.stream().collect(Collectors.toMap(RolePermission::getInterfaceName, permission -> permission, (key1, key2) -> key1));
-        }
+        this.setRoleMap(roleList);
+        this.setRolePermissionMap(rolePermissionList);
+
     }
 
     private long userId;
@@ -85,11 +78,34 @@ public class SessionVO implements Serializable {
      * 角色map
      * key：roleName
      */
-    private Map<String, Role> roleMap;
+    private transient Map<String, Role> roleMap;
     /**
      * 角色权限map
      * key：interfaceName
      */
-    private Map<String, RolePermission> rolePermissionMap;
+    private transient Map<String, RolePermission> rolePermissionMap;
 
+    public void setRoleMap(Map<String, Role> roleMap) {
+        this.roleMap = roleMap;
+    }
+
+    public void setRolePermissionMap(Map<String, RolePermission> rolePermissionMap) {
+        this.rolePermissionMap = rolePermissionMap;
+    }
+
+    public void setRoleMap(List<Role> roleList) {
+        if (!CollectionUtils.isEmpty(roleList)) {
+            /**
+             * toMap 如果集合对象有重复的key，会报错Duplicate key ...
+             * 可以用 (key1,key2)->key1 来设置，如果有重复的key,则保留key1,舍弃key2
+             */
+            this.roleMap = roleList.stream().collect(Collectors.toMap(Role::getRoleName, role -> role, (key1, key2) -> key1));
+        }
+    }
+
+    public void setRolePermissionMap(List<RolePermission> rolePermissionList) {
+        if (!CollectionUtils.isEmpty(rolePermissionList)) {
+            this.rolePermissionMap = rolePermissionList.stream().collect(Collectors.toMap(RolePermission::getInterfaceName, permission -> permission, (key1, key2) -> key1));
+        }
+    }
 }

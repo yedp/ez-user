@@ -8,17 +8,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 
 @Service
 public class LogService implements ILogService {
     /**
      * 请求日志表名前缀.
      */
-//    private static final String TABLE_NAME = "request_log_%s%s";
+    private static final String TABLE_NAME = "request_log_%s";
     /**
      * 时间格式化 -- 年月.
      */
-//    private static  final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMM");
     @Resource
     private RequestLogMapper requestLogMapper;
 
@@ -29,8 +29,8 @@ public class LogService implements ILogService {
      */
     @Async
     public void addLog(RequestLog requestLog) {
-//        String tableName = String.format(TABLE_NAME, Calendar.getInstance().get(Calendar.YEAR),Calendar.getInstance().get(Calendar.MONTH)+1);
-        requestLog.setTableName("request_log");
+        String tableName = String.format(TABLE_NAME, Calendar.getInstance().get(Calendar.YEAR));
+        requestLog.setTableName(tableName);
         requestLogMapper.insertSelective(requestLog);
     }
 }
