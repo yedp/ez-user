@@ -56,3 +56,8 @@ eureka:
       defaultZone: http://yedp:5022ydp@localhost:9000/eureka/
   instance:
     prefer-ip-address: true
+
+logging:
+  file:
+    path: ./log
+    name: ez_user.log
